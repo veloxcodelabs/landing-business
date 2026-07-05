@@ -2,7 +2,34 @@
 
 export default function AiPayment() {
   useEffect(() => {
-    // ---- Load PayPal SDK ----
+    // ---- HIDE CHATBOT (generic) ----
+    const hideChatbot = () => {
+      const chat =
+        document.querySelector("#chatbot") ||
+        document.querySelector(".chatbot") ||
+        document.querySelector("[class*='chat']") ||
+        document.querySelector("iframe[src*='chat']") ||
+        document.querySelector("iframe[src*='bot']");
+
+      if (chat) {
+        chat.style.display = "none";
+      }
+
+      // hide possible floating buttons
+      const floating =
+        document.querySelector("[class*='widget']") ||
+        document.querySelector("[class*='intercom']") ||
+        document.querySelector("[class*='crisp']") ||
+        document.querySelector("[id*='chat']");
+
+      if (floating) {
+        floating.style.display = "none";
+      }
+    };
+
+    hideChatbot();
+
+    // ---- LOAD PAYPAL SDK ----
     if (!document.getElementById("paypal-sdk")) {
       const script = document.createElement("script");
       script.id = "paypal-sdk";
@@ -20,6 +47,30 @@ export default function AiPayment() {
       };
       document.head.appendChild(script);
     }
+
+    // restore on exit
+    return () => {
+      const chat =
+        document.querySelector("#chatbot") ||
+        document.querySelector(".chatbot") ||
+        document.querySelector("[class*='chat']") ||
+        document.querySelector("iframe[src*='chat']") ||
+        document.querySelector("iframe[src*='bot']");
+
+      if (chat) {
+        chat.style.display = "block";
+      }
+
+      const floating =
+        document.querySelector("[class*='widget']") ||
+        document.querySelector("[class*='intercom']") ||
+        document.querySelector("[class*='crisp']") ||
+        document.querySelector("[id*='chat']");
+
+      if (floating) {
+        floating.style.display = "block";
+      }
+    };
   }, []);
 
   return (
@@ -48,13 +99,16 @@ export default function AiPayment() {
         <h2 style={{ fontSize: "1.8rem", fontWeight: "700", marginBottom: "1rem" }}>
           Готов AI Чатбот 💬
         </h2>
+
         <p style={{ fontSize: "1rem", color: "#444", marginBottom: "1rem" }}>
           💬 Вземи своя AI чатбот за €15! Стартирай автоматични разговори с клиенти
-          за минути – без кодиране. Получаваш напълно готов бот + инструкции за
-          веднага използване! 🛒 Купи сега
+          за минути – без кодиране.
         </p>
 
-        <h3 style={{ fontWeight: "600", marginBottom: "1rem" }}>Какво включва пакетът:</h3>
+        <h3 style={{ fontWeight: "600", marginBottom: "1rem" }}>
+          Какво включва пакетът:
+        </h3>
+
         <ul
           style={{
             textAlign: "left",
@@ -66,41 +120,24 @@ export default function AiPayment() {
             color: "#333",
           }}
         >
-          <li>Напълно готов AI чатбот с лесна настройка</li>
-          <li>Вградени отговори и автоматизации</li>
-          <li>Подходящ за сайтове, социални мрежи и кампании</li>
-          <li>Цена: €15 (около 30 лв)</li>
+          <li>Напълно готов AI чатбот</li>
+          <li>Автоматични отговори</li>
+          <li>Подходящ за сайтове и бизнеси</li>
+          <li>Цена: €15</li>
         </ul>
 
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <h3
-            style={{
-              fontSize: "1.2rem",
-              fontWeight: "600",
-              marginBottom: "0.5rem",
-              maxWidth: "400px",
-              lineHeight: "1.4",
-              margin: "0 auto",
-            }}
-          >
-            Купи готовия чатбот и стартирай веднага 🚀
-          </h3>
+        <p style={{ fontWeight: "bold", fontSize: "1.1rem" }}>€15.00 EUR</p>
 
-          <p style={{ fontWeight: "bold", fontSize: "1.1rem", marginBottom: "1rem" }}>
-            €15.00 EUR
-          </p>
-
-          <div
-            id="paypal-container"
-            style={{
-              display: "block",
-              maxWidth: "400px",
-              width: "100%",
-              margin: "0 auto",
-              textAlign: "center",
-            }}
-          ></div>
-        </div>
+        <div
+          id="paypal-container"
+          style={{
+            display: "block",
+            maxWidth: "400px",
+            width: "100%",
+            margin: "0 auto",
+            textAlign: "center",
+          }}
+        ></div>
       </div>
     </div>
   );
