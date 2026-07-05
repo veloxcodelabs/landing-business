@@ -20,27 +20,6 @@ export default function AiPayment() {
       };
       document.head.appendChild(script);
     }
-
-    // ---- Load Chatbox Script ----
-    if (!document.getElementById("chatbox-sdk")) {
-      const chatScript = document.createElement("script");
-      chatScript.id = "chatbox-sdk";
-      chatScript.src = "https://my-vercel-api-ecru.vercel.app/chatbox.bundle.js";
-      chatScript.async = true;
-      chatScript.onload = () => {
-        if (window.Chatbox) {
-          window.Chatbox.init({
-            elementId: "my-chatbox",
-            backendUrl: "https://my-vercel-api-ecru.vercel.app/api/chat",
-            clientKey: null,
-            clientId: "client1-siteA",
-            clientPrompt:
-              "You are the support bot for ACME Corp. Answer questions about products and shipping in a friendly tone.",
-          });
-        }
-      };
-      document.body.appendChild(chatScript);
-    }
   }, []);
 
   return (
@@ -123,12 +102,6 @@ export default function AiPayment() {
           ></div>
         </div>
       </div>
-
-      {/* Chatbox container */}
-      <div
-        id="my-chatbox"
-        style={{ marginTop: "2rem", width: "100%", maxWidth: "600px" }}
-      ></div>
     </div>
   );
 }
