@@ -1,143 +1,67 @@
-﻿import React, { useEffect } from "react";
+﻿import React, { useEffect, useState } from "react";
 
 export default function AiPayment() {
+  const [paypalError, setPaypalError] = useState(false);
+
   useEffect(() => {
-    // ---- HIDE CHATBOT (generic) ----
-    const hideChatbot = () => {
-      const chat =
-        document.querySelector("#chatbot") ||
-        document.querySelector(".chatbot") ||
-        document.querySelector("[class*='chat']") ||
-        document.querySelector("iframe[src*='chat']") ||
-        document.querySelector("iframe[src*='bot']");
-
-      if (chat) {
-        chat.style.display = "none";
-      }
-
-      // hide possible floating buttons
-      const floating =
-        document.querySelector("[class*='widget']") ||
-        document.querySelector("[class*='intercom']") ||
-        document.querySelector("[class*='crisp']") ||
-        document.querySelector("[id*='chat']");
-
-      if (floating) {
-        floating.style.display = "none";
+    // ---- 1. INITIALIZE CHATBOX ----
+    const scriptId = "chatbox-script";
+    const initChat = () => {
+      if (window.Chatbox && document.getElementById('my-chatbox')) {
+        window.Chatbox.init({
+          elementId: 'my-chatbox',
+          backendUrl: 'https://my-vercel-api-ecru.vercel.app/api/chat',
+          language: 'en',
+          clientPrompt: `Official Style Assistant for Martitony. 
+          1. HOW IT WORKS: Upload photo + prompt = AI redesign.
+          2. PRICING: 1000 credits/$1. 10000 credits/$9.
+          3. PRIVACY: Data deleted within 60s.
+          4. CONTACT: Message us on WhatsApp at https://wa.me/5521959474552`
+        });
       }
     };
 
-    hideChatbot();
-
-    // ---- LOAD PAYPAL SDK ----
-    if (!document.getElementById("paypal-sdk")) {
-      const script = document.createElement("script");
-      script.id = "paypal-sdk";
-      script.src =
-        "https://www.paypal.com/sdk/js?client-id=BAAVYiC-srs0QQ7eQzFSPWsDfdJxKxthYO920jVotBhncf-yHaoRwrA_AOdHpsvzPCvCzWsQxa6UzGm5gA&components=hosted-buttons&disable-funding=venmo&currency=EUR";
-      script.async = true;
-      script.onload = () => {
-        if (window.paypal) {
-          window.paypal
-            .HostedButtons({
-              hostedButtonId: "ZM7D8VVQS7NGE",
-            })
-            .render("#paypal-container");
-        }
-      };
-      document.head.appendChild(script);
+    let chatScript = document.getElementById(scriptId);
+    if (!chatScript) {
+      chatScript = document.createElement('script');
+      chatScript.id = scriptId;
+      chatScript.src = "https://my-vercel-api-ecru.vercel.app/chatbox.bundle.js";
+      chatScript.async = true;
+      chatScript.onload = initChat;
+      document.body.appendChild(chatScript);
+    } else {
+      initChat();
     }
 
-    // restore on exit
-    return () => {
-      const chat =
-        document.querySelector("#chatbot") ||
-        document.querySelector(".chatbot") ||
-        document.querySelector("[class*='chat']") ||
-        document.querySelector("iframe[src*='chat']") ||
-        document.querySelector("iframe[src*='bot']");
-
-      if (chat) {
-        chat.style.display = "block";
-      }
-
-      const floating =
-        document.querySelector("[class*='widget']") ||
-        document.querySelector("[class*='intercom']") ||
-        document.querySelector("[class*='crisp']") ||
-        document.querySelector("[id*='chat']");
-
-      if (floating) {
-        floating.style.display = "block";
-      }
-    };
+    // ---- 2. LOAD PAYPAL SDK ----
+    if (!document.getElementById("paypal-sdk")) {
+      const ppScript = document.createElement("script");
+      ppScript.id = "paypal-sdk";
+      ppScript.src = "https://www.paypal.com/sdk/js?client-id=BAAVYiC-srs0QQ7eQzFSPWsDfdJxKxthYO920jVotBhncf-yHaoRwrA_AOdHpsvzPCvCzWsQxa6UzGm5gA&components=hosted-buttons&disable-funding=venmo&currency=EUR";
+      ppScript.async = true;
+      ppScript.onload = () => {
+        if (window.paypal && window.paypal.HostedButtons) {
+          window.paypal.HostedButtons({ hostedButtonId: "ZM7D8VVQS7NGE" }).render("#paypal-container");
+        } else {
+          setPaypalError(true);
+        }
+      };
+      ppScript.onerror = () => setPaypalError(true);
+      document.head.appendChild(ppScript);
+    }
   }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "center",
-        flexDirection: "column",
-        backgroundColor: "#fff",
-        padding: "2rem",
-        paddingTop: "1rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "600px",
-          width: "100%",
-          textAlign: "center",
-          border: "1px solid #eee",
-          borderRadius: "10px",
-          padding: "2rem",
-          boxShadow: "0 0 10px rgba(0,0,0,0.05)",
-        }}
-      >
-        <h2 style={{ fontSize: "1.8rem", fontWeight: "700", marginBottom: "1rem" }}>
-          Готов AI Чатбот 💬
-        </h2>
+    <div style={{ padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      {/* Container for your Chatbox */}
+      <div id="my-chatbox" style={{ marginBottom: "2rem" }}></div>
 
-        <p style={{ fontSize: "1rem", color: "#444", marginBottom: "1rem" }}>
-          💬 Вземи своя AI чатбот за €15! Стартирай автоматични разговори с клиенти
-          за минути – без кодиране.
-        </p>
-
-        <h3 style={{ fontWeight: "600", marginBottom: "1rem" }}>
-          Какво включва пакетът:
-        </h3>
-
-        <ul
-          style={{
-            textAlign: "left",
-            listStyleType: "disc",
-            margin: "0 auto 2rem auto",
-            paddingLeft: "1.5rem",
-            maxWidth: "500px",
-            lineHeight: "1.6",
-            color: "#333",
-          }}
-        >
-          <li>Напълно готов AI чатбот</li>
-          <li>Автоматични отговори</li>
-          <li>Подходящ за сайтове и бизнеси</li>
-          <li>Цена: €15</li>
-        </ul>
-
-        <p style={{ fontWeight: "bold", fontSize: "1.1rem" }}>€15.00 EUR</p>
-
-        <div
-          id="paypal-container"
-          style={{
-            display: "block",
-            maxWidth: "400px",
-            width: "100%",
-            margin: "0 auto",
-            textAlign: "center",
-          }}
-        ></div>
+      {/* Payment Section */}
+      <div style={{ maxWidth: "600px", width: "100%", textAlign: "center", border: "1px solid #eee", borderRadius: "10px", padding: "2rem" }}>
+        <h2>Готов AI Чатбот 💬</h2>
+        <div id="paypal-container" style={{ minHeight: "150px" }}>
+          {paypalError && <p style={{ color: "red" }}>Плащането е блокирано. Моля, изключете AdBlocker.</p>}
+        </div>
       </div>
     </div>
   );
