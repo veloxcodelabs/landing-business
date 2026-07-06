@@ -11,12 +11,13 @@ export default function AiPayment() {
         window.Chatbox.init({
           elementId: 'my-chatbox',
           backendUrl: 'https://my-vercel-api-ecru.vercel.app/api/chat',
-          language: 'en',
-          clientPrompt: `Official Style Assistant for Martitony. 
-          1. HOW IT WORKS: Upload photo + prompt = AI redesign.
-          2. PRICING: 1000 credits/$1. 10000 credits/$9.
-          3. PRIVACY: Data deleted within 60s.
-          4. CONTACT: Message us on WhatsApp at https://wa.me/5521959474552`
+          language: 'bg', // Set language environment directly to Bulgarian
+          clientPrompt: `Ти си любезен търговски асистент за Martitony, който предлага Готов AI Чатбот.
+          1. ПРОДУКТ: Готов AI чатбот за сайтове, онлайн магазини и бизнеси.
+          2. ЦЕНА: Пакетът струва точно €15.00 EUR (еднократно плащане).
+          3. ПРЕДИМСТВА: Автоматични отговори за клиенти, инсталация за минути, без кодиране, вдига продажбите.
+          4. КАК СЕ КУПУВА: Чрез PayPal или дебитна карта от бутоните на тази страница.
+          5. ПРАВИЛО: Отговаряй кратко (до 2 изречения) винаги на български език и помагай на потребителя да направи покупка.`
         });
       }
     };
@@ -32,6 +33,9 @@ export default function AiPayment() {
     } else {
       initChat();
     }
+
+    // Safe fallback to ensure initialization happens even during fast page refreshes
+    const timeout = setTimeout(initChat, 1000);
 
     // ---- 2. LOAD PAYPAL SDK ----
     if (!document.getElementById("paypal-sdk")) {
@@ -49,6 +53,8 @@ export default function AiPayment() {
       ppScript.onerror = () => setPaypalError(true);
       document.head.appendChild(ppScript);
     }
+
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
