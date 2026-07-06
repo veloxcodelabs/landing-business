@@ -5,7 +5,6 @@ import ChatBox from './ChatBox';
 function App() {
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}></h1>
       <BusinessLanding />
       <ChatBox />
     </div>
@@ -13,4 +12,3 @@ function App() {
 }
 
 export default App;
-
